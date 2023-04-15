@@ -19,11 +19,11 @@ public interface UserService {
 	public Optional<User> findById(Integer id);
 
 	public void deleteById(Integer id);
-	
-	public  Optional<User> findByUsername(String username);
+
+	public Optional<User> findByUsername(String username);
 
 	public Boolean existsByUsername(String username);
 
-	public  Boolean existsByEmail(String email);
-	
+	public Boolean existsByEmail(String email);
+
 }

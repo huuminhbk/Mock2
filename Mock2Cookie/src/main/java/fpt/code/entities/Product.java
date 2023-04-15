@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Product {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -33,7 +33,7 @@ public class Product {
 	private Double price;
 
 	@NotBlank(message = "Product's name is mandatory")
-	@Column(nullable = false, length = 50,unique = true)
+	@Column(nullable = false, length = 50, unique = true)
 	@Size(min = 3, max = 50, message = "The number of characters in the field Product's name cannot be less than 3 and greater than 50")
 	private String product_name;
 
@@ -48,15 +48,6 @@ public class Product {
 	@NotNull(message = "quantity is mandatory")
 	@Column(columnDefinition = "int default(0)", length = 11)
 	@Min(value = 0, message = "value quantity cannot less than 0")
-	private Integer quantity ;
+	private Integer quantity;
 
-//	@JsonManagedReference
-//	@OneToMany(mappedBy = "trip", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//	private List<BookingOffice> bookingOffices;
-//
-//	@JsonIgnore
-//	@OneToMany(mappedBy = "trip", cascade = CascadeType.ALL)
-//	@EqualsAndHashCode.Exclude
-//	@ToString.Exclude
-//	private Collection<Ticket> tickets;
 }

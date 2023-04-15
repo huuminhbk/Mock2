@@ -1,0 +1,6 @@
+2023-04-15 16:53:49 DEBUG Mock2CookieApplication:14 - debug log
+2023-04-15 16:53:49 ERROR Mock2CookieApplication:15 - error log
+2023-04-15 16:53:49 INFO  Mock2CookieApplication:16 - info log
+2023-04-15 18:17:47 DEBUG Mock2CookieApplication:14 - debug log
+2023-04-15 18:17:47 ERROR Mock2CookieApplication:15 - error log
+2023-04-15 18:17:47 INFO  Mock2CookieApplication:16 - info log

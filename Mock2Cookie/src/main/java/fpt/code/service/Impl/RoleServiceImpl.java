@@ -12,8 +12,9 @@ import fpt.code.service.RoleService;
 
 @Component
 public class RoleServiceImpl implements RoleService {
-@Autowired
-RoleRepository roleRepository;
+	@Autowired
+	RoleRepository roleRepository;
+
 	@Override
 	public Optional<Role> findByName(ERole name) {
 		return roleRepository.findByName(name);

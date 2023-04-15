@@ -1,12 +1,15 @@
 package fpt.code.entities;
 
+import lombok.Data;
+
 import javax.persistence.*;
-import java.sql.Date;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
 @Table(name = "orders")
+@Data
 public class Order {
 
     @Id
@@ -25,6 +28,13 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<Product> productList = new HashSet<>();
+
+
+
+
+
+
+
 
 
 

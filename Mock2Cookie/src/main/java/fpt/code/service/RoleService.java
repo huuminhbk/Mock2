@@ -9,5 +9,5 @@ import fpt.code.entities.Role;
 
 @Service
 public interface RoleService {
-	 public  Optional<Role> findByName(ERole name);
+	public Optional<Role> findByName(ERole name);
 }

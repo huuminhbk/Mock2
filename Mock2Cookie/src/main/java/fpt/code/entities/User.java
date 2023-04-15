@@ -1,5 +1,6 @@
 package fpt.code.entities;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ import lombok.Data;
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = "username"),
 		@UniqueConstraint(columnNames = "email") })
 @Data
-public class User {
+public class User implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -99,11 +100,5 @@ public class User {
 	public void setRoles(Set<Role> roles) {
 		this.roles = roles;
 	}
-
-//@Override
-//public String toString() {
-//	return "User [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password + ", roles="
-//			+ roles + "]";
-//}
 
 }

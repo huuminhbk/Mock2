@@ -10,6 +10,7 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -45,6 +46,7 @@ import org.springframework.util.StringUtils;
 @RestController
 @RequestMapping("/api/product")
 public class ProductController {
+	private static final Logger logger = Logger.getLogger(ProductController.class);
 
 	@Autowired
 	ProductService productService;
@@ -64,6 +66,8 @@ public class ProductController {
 			if (listProducts.isEmpty()) {
 				map.put("status", 0);
 				map.put("message", "Data products not exist !!!");
+				logger.error("không có sản phẩm nào ");
+
 
 				return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
 			}
@@ -83,6 +87,7 @@ public class ProductController {
 			map.clear();
 			map.put("status", 0);
 			map.put("message", "display products failed !!!!");
+			logger.error("không thể hiển thị sản phẩm");
 
 			return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -130,12 +135,13 @@ public class ProductController {
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> updateProductById(@PathVariable Integer id,
 			@Valid @RequestPart(name = "productRequest", required = true) ProductRequest productRequest,
-			@RequestParam(name = "file", required = false) MultipartFile file) {
+			@RequestParam(name = "file", required = false) MultipartFile file) throws IOException {
 		Map<String, Object> map = new LinkedHashMap<String, Object>();
 		try {
 			Optional<Product> productOptional = productService.findById(id);
 			if (productOptional.isPresent()) {
 				Product product = productOptional.get();
+				System.out.println("agkjadjfk" + product);
 				product.setPrice(productRequest.getPrice());
 				product.setDescription(productRequest.getDescription());
 				product.setProduct_name(productRequest.getProduct_name());

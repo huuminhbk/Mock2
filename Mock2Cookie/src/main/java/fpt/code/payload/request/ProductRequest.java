@@ -22,7 +22,7 @@ public class ProductRequest {
 	private Double price;
 
 	@NotBlank(message = "Product's name is mandatory")
-	@Column(nullable = false, length = 50,unique = true)
+	@Column(nullable = false, length = 50, unique = true)
 	@Size(min = 3, max = 50, message = "The number of characters in the field Product's name cannot be less than 3 and greater than 50")
 	private String product_name;
 

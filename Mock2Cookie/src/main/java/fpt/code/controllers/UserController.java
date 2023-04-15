@@ -9,9 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import fpt.code.dto.UserDto;
 import fpt.code.entities.ERole;
 import fpt.code.entities.User;
 import fpt.code.mail.MailService;
@@ -53,14 +56,16 @@ public class UserController {
 
 	@Autowired
 	RoleService roleService;
-	
+
 	@Autowired
 	MailService mailService;
 
 	@Autowired
 	PasswordEncoder encoder;
 
-	
+	@Autowired
+	ModelMapper modelMapper;
+
 	@GetMapping(value = "/all")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> displayUsers(@RequestParam(defaultValue = "0") int page,
@@ -68,6 +73,7 @@ public class UserController {
 
 		Map<String, Object> map = new HashMap<String, Object>();
 		List<User> listUser = new ArrayList<User>();
+		List<UserDto> listUserDto = new ArrayList<UserDto>();
 		try {
 			Pageable pageable = PageRequest.of(page, size);
 			Page<User> pageTuts;
@@ -81,9 +87,11 @@ public class UserController {
 				return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
 			}
 
+			listUserDto = listUser.stream().map(e -> modelMapper.map(e, UserDto.class)).collect(Collectors.toList());
+
 			map.put("status", 1);
 			map.put("message", "display users successfully !!!");
-			map.put("users", listUser);
+			map.put("users", listUserDto);
 			map.put("currentPage", pageTuts.getNumber() + 1);
 			map.put("totalItems", pageTuts.getTotalElements());
 			map.put("totalPages", pageTuts.getTotalPages());
@@ -101,7 +109,7 @@ public class UserController {
 		}
 
 	}
-	
+
 	@DeleteMapping(value = "/delete/{id}")
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> deleteUser(@PathVariable Integer id) {
@@ -130,8 +138,7 @@ public class UserController {
 			return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
-	
+
 	@PostMapping(value = "/create", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE })
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<?> createUser(
@@ -140,6 +147,7 @@ public class UserController {
 
 	) throws IOException {
 		Map<String, Object> map = new HashMap<String, Object>();
+
 		try {
 			if (userService.existsByUsername(userRequest.getUsername())) {
 				return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
@@ -148,27 +156,28 @@ public class UserController {
 			if (userService.existsByEmail(userRequest.getEmail())) {
 				return ResponseEntity.badRequest().body(new MessageResponse("Error: Email is already in use!"));
 			}
+
 			Set<Role> roles = new HashSet<>();
 			String fileName = StringUtils.cleanPath(avatar.getOriginalFilename());
 			String fileCode = FileUploadUtil.saveFile(fileName, avatar);
 			User user = new User();
 			user.setEmail(userRequest.getEmail());
 			user.setUsername(userRequest.getUsername());
-			user.setEnable(true);
+//			user.setEnable(true);
 			Role userRole = roleService.findByName(ERole.ROLE_USER)
 					.orElseThrow(() -> new RuntimeException("Error: Role is not found."));
-			roles.add(userRole); 
+			roles.add(userRole);
 			user.setRoles(roles);
 			user.setPassword(encoder.encode(userRequest.getPassword()));
 			user.setAvatar("/downloadFile/" + fileCode);
-			
+			System.out.println("sgasgjka:::" + user);
 			mailService.register(user);
-			
+
 			userService.save(user);
-			
+			UserDto userDto = modelMapper.map(user, UserDto.class);
 			map.put("status", 1);
-			map.put("data", user);
-			map.put("message", "add user successfully !!!");
+			map.put("data", userDto);
+			map.put("message", "add user successfully.  Please check your email to activate your account !!!!");
 			return new ResponseEntity<>(map, HttpStatus.CREATED);
 
 		} catch (Exception ex) {
@@ -181,30 +190,26 @@ public class UserController {
 		}
 
 	}
-	
-	  @GetMapping("/verify")
-	  public ResponseEntity<?> verifyUser( @RequestParam String code){
-		  Map<String,Object> map = new HashMap<String,Object>();
-	      try {
-	          if (mailService.verify(code) == true) {
-	              map.put("status", 1);
-	              map.put("message", "kích hoạt tài khoản thành công");
-	          }else {
-	              map.put("status", 0);
-	              map.put("message", "kích hoạt tài khoản thất bại");
-	          }
-	          return new ResponseEntity<>(map, HttpStatus.OK);
-	      } catch (Exception ex) {
-	          ex.getStackTrace();
-	          map.clear();
-	          map.put("status", 0);
-	          map.put("message", "send mail  failed !!!!");
-	          return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
-	      }
-	  }
-	
-	
-	
-	
-	
+
+	@GetMapping("/verify")
+	public ResponseEntity<?> verifyUser(@RequestParam String code) {
+		Map<String, Object> map = new HashMap<String, Object>();
+		try {
+			if (mailService.verify(code) == true) {
+				map.put("status", 1);
+				map.put("message", "kích hoạt tài khoản thành công");
+			} else {
+				map.put("status", 0);
+				map.put("message", "kích hoạt tài khoản thất bại");
+			}
+			return new ResponseEntity<>(map, HttpStatus.OK);
+		} catch (Exception ex) {
+			ex.getStackTrace();
+			map.clear();
+			map.put("status", 0);
+			map.put("message", "send mail  failed !!!!");
+			return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
 }

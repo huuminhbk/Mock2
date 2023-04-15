@@ -14,7 +14,6 @@ import fpt.code.entities.Product;
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 	Page<Product> findAll(Pageable pageable);
 
-	
 	@Query(value = "SELECT * FROM products p WHERE p.product_name = ?1", nativeQuery = true)
 	Optional<Product> findByProduct_name(String product_name);
 }

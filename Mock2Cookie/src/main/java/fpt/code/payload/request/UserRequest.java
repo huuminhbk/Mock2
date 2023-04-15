@@ -1,7 +1,5 @@
 package fpt.code.payload.request;
 
-import java.util.Set;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -29,7 +27,7 @@ public class UserRequest {
 	@Size(max = 120)
 	private String password;
 
-	@Size(min = 1, max = 2)
-	private Set<String> roles;
+//	@Size(min = 1, max = 2)
+//	private Set<String> roles;
 
 }
