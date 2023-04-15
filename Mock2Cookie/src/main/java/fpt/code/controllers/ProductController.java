@@ -118,6 +118,7 @@ public class ProductController {
 			map.put("status", 1);
 			map.put("data", product);
 			map.put("message", "add product successfully !!!");
+			logger.info("add product successfully !!!");
 			return new ResponseEntity<>(map, HttpStatus.CREATED);
 
 		} catch (Exception ex) {
@@ -125,6 +126,7 @@ public class ProductController {
 			map.clear();
 			map.put("status", 0);
 			map.put("message", "create products failed !!!!");
+			logger.error("create products failed !!!!");
 
 			return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -167,6 +169,7 @@ public class ProductController {
 			map.clear();
 			map.put("status", 0);
 			map.put("message", "update product failed !!!!");
+			logger.error("update product failed !!!!");
 
 			return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 		}
@@ -187,6 +190,7 @@ public class ProductController {
 			} else {
 				map.put("status", 0);
 				map.put("message", "not found product with id = " + id);
+				logger.error("not found product with id = " + id);
 
 				return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 			}
@@ -196,6 +200,7 @@ public class ProductController {
 			map.clear();
 			map.put("status", 0);
 			map.put("message", "delete product failed !!!");
+			logger.error("delete product failed !!!");
 
 			return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -211,15 +216,18 @@ public class ProductController {
 		try {
 			resource = downloadUtil.getFileAsResource(fileCode);
 		} catch (IOException e) {
+			logger.error("internal server exception");
 			return ResponseEntity.internalServerError().build();
 		}
 
 		if (resource == null) {
+			logger.error("file not found");
 			return new ResponseEntity<>("File not found", HttpStatus.NOT_FOUND);
 		}
 
 		String contentType = "application/octet-stream";
 		String headerValue = "attachment; filename=\"" + resource.getFilename() + "\"";
+		logger.error("Download successfully");
 
 		return ResponseEntity.ok().contentType(MediaType.parseMediaType(contentType))
 				.header(HttpHeaders.CONTENT_DISPOSITION, headerValue).body(resource);

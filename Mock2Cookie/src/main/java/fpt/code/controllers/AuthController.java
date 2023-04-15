@@ -11,6 +11,7 @@ import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,6 +50,7 @@ import fpt.code.security.service.UserDetailsImpl;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
+	private static  final Logger logger = Logger.getLogger(AuthController.class);
 	@Autowired
 	AuthenticationManager authenticationManager;
 
@@ -72,6 +74,7 @@ public class AuthController {
 
 	@PostMapping("/signin")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+		logger.info("Sign in for an account!!!");
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -88,6 +91,7 @@ public class AuthController {
 		RefreshToken refreshToken = refreshTokenService.createRefreshToken(userDetails.getId());
 
 		ResponseCookie jwtRefreshCookie = jwtUtils.generateRefreshJwtCookie(refreshToken.getToken());
+		logger.info("Signin Successfully");
 
 		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
 				.header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString()).body(new UserInfoResponse(
@@ -102,9 +106,11 @@ public class AuthController {
 			if (mailService.verify(code) == true) {
 				map.put("status", 1);
 				map.put("message", "kích hoạt tài khoản thành công");
+				logger.info("verification successfully !!!");
 			} else {
 				map.put("status", 0);
 				map.put("message", "kích hoạt tài khoản thất bại");
+				logger.info("verification failed");
 			}
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} catch (Exception ex) {
@@ -119,6 +125,7 @@ public class AuthController {
 	@PostMapping("/signup")
 
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+		logger.info("Sign up for an account!!!");
 
 		if (userRepository.existsByUsername(signUpRequest.getUsername())) {
 			return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
@@ -170,7 +177,9 @@ public class AuthController {
 		} catch (MessagingException e) {
 			throw new RuntimeException(e);
 		}
+		logger.info("Registered an account successfully !!!");
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+
 	}
 
 	@PostMapping("/signout")
@@ -180,9 +189,9 @@ public class AuthController {
 			Integer userId = ((UserDetailsImpl) principle).getId();
 			refreshTokenService.deleteByUserId(userId);
 		}
-
 		ResponseCookie jwtCookie = jwtUtils.getCleanJwtCookie();
 		ResponseCookie jwtRefreshCookie = jwtUtils.getCleanJwtRefreshCookie();
+		logger.info("You've been sign out");
 
 		return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
 				.header(HttpHeaders.SET_COOKIE, jwtRefreshCookie.toString())
@@ -197,12 +206,13 @@ public class AuthController {
 			return refreshTokenService.findByToken(refreshToken).map(refreshTokenService::verifyExpiration)
 					.map(RefreshToken::getUser).map(user -> {
 						ResponseCookie jwtCookie = jwtUtils.generateJwtCookie(user);
+						logger.info("Token is refreshed successfully! ");
 
 						return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, jwtCookie.toString())
 								.body(new MessageResponse("Token is refreshed successfully!"));
 					}).orElseThrow(() -> new TokenRefreshException(refreshToken, "Refresh token is not in database!"));
 		}
-
+		logger.warn("refreshtoken is empty");
 		return ResponseEntity.badRequest().body(new MessageResponse("Refresh Token is empty!"));
 	}
 }

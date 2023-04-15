@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -50,6 +51,7 @@ import fpt.code.utils.FileUploadUtil;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+	private static final Logger logger = Logger.getLogger(UserController.class);
 
 	@Autowired
 	UserService userService;
@@ -84,6 +86,8 @@ public class UserController {
 				map.put("status", 0);
 				map.put("message", "Data users not exist !!!");
 
+
+				logger.warn("Data users not exist !!!");
 				return new ResponseEntity<>(map, HttpStatus.NO_CONTENT);
 			}
 
@@ -96,6 +100,7 @@ public class UserController {
 			map.put("totalItems", pageTuts.getTotalElements());
 			map.put("totalPages", pageTuts.getTotalPages());
 			map.put("pageSize", size);
+			logger.info("display users successfully !!!");
 
 			return new ResponseEntity<>(map, HttpStatus.OK);
 
@@ -104,6 +109,7 @@ public class UserController {
 			map.clear();
 			map.put("status", 0);
 			map.put("message", "display users failed !!!!");
+			logger.error("display users failed !!!!");
 
 			return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -120,11 +126,13 @@ public class UserController {
 				userService.deleteById(id);
 				map.put("status", 1);
 				map.put("message", "delete user successfully !!!");
+				logger.info("delete successfully");
 
 				return new ResponseEntity<>(map, HttpStatus.OK);
 			} else {
 				map.put("status", 0);
 				map.put("message", "not found user with id = " + id);
+				logger.warn("not found user with id = " + id);
 
 				return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
 			}
@@ -134,7 +142,7 @@ public class UserController {
 			map.clear();
 			map.put("status", 0);
 			map.put("message", "delete user failed !!!");
-
+			logger.error("delete user failed !!!");
 			return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -178,6 +186,7 @@ public class UserController {
 			map.put("status", 1);
 			map.put("data", userDto);
 			map.put("message", "add user successfully.  Please check your email to activate your account !!!!");
+			logger.info("add user successfully.  Please check your email to activate your account !!!!");
 			return new ResponseEntity<>(map, HttpStatus.CREATED);
 
 		} catch (Exception ex) {
@@ -185,6 +194,7 @@ public class UserController {
 			map.clear();
 			map.put("status", 0);
 			map.put("message", "create user failed !!!!");
+			logger.error("create user failed !!!");
 
 			return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -198,9 +208,11 @@ public class UserController {
 			if (mailService.verify(code) == true) {
 				map.put("status", 1);
 				map.put("message", "kích hoạt tài khoản thành công");
+				logger.info("kích hoạt tài khoản thành công");
 			} else {
 				map.put("status", 0);
 				map.put("message", "kích hoạt tài khoản thất bại");
+				logger.info("kích hoạt tài khoản thất bại");
 			}
 			return new ResponseEntity<>(map, HttpStatus.OK);
 		} catch (Exception ex) {
@@ -208,6 +220,7 @@ public class UserController {
 			map.clear();
 			map.put("status", 0);
 			map.put("message", "send mail  failed !!!!");
+			logger.error("send mail  failed !!!!");
 			return new ResponseEntity<>(map, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
