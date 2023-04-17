@@ -1,0 +1,32 @@
+2023-04-16 15:23:59 DEBUG Mock2CookieApplication:14 - debug log
+2023-04-16 15:23:59 ERROR Mock2CookieApplication:15 - error log
+2023-04-16 15:23:59 INFO  Mock2CookieApplication:16 - info log
+2023-04-16 15:33:12 INFO  AuthController:116 - Sign up for an account!!!
+2023-04-16 15:33:15 INFO  AuthController:168 - Registered an account successfully !!!
+2023-04-16 16:10:16 DEBUG Mock2CookieApplication:14 - debug log
+2023-04-16 16:10:16 ERROR Mock2CookieApplication:15 - error log
+2023-04-16 16:10:16 INFO  Mock2CookieApplication:16 - info log
+2023-04-16 16:20:08 INFO  AuthController:116 - Sign up for an account!!!
+2023-04-16 16:20:11 INFO  AuthController:168 - Registered an account successfully !!!
+2023-04-16 16:24:18 DEBUG Mock2CookieApplication:14 - debug log
+2023-04-16 16:24:18 ERROR Mock2CookieApplication:15 - error log
+2023-04-16 16:24:18 INFO  Mock2CookieApplication:16 - info log
+2023-04-16 16:24:40 INFO  AuthController:116 - Sign up for an account!!!
+2023-04-16 16:24:49 INFO  AuthController:116 - Sign up for an account!!!
+2023-04-16 16:26:11 DEBUG Mock2CookieApplication:14 - debug log
+2023-04-16 16:26:11 ERROR Mock2CookieApplication:15 - error log
+2023-04-16 16:26:11 INFO  Mock2CookieApplication:16 - info log
+2023-04-16 16:26:56 INFO  AuthController:116 - Sign up for an account!!!
+2023-04-16 16:27:00 INFO  AuthController:168 - Registered an account successfully !!!
+2023-04-16 16:27:38 INFO  AuthController:97 - verification successfully !!!
+2023-04-16 16:29:46 INFO  AuthController:65 - Sign in for an account!!!
+2023-04-16 16:32:37 DEBUG Mock2CookieApplication:14 - debug log
+2023-04-16 16:32:37 ERROR Mock2CookieApplication:15 - error log
+2023-04-16 16:32:37 INFO  Mock2CookieApplication:16 - info log
+2023-04-16 16:34:26 INFO  AuthController:116 - Sign up for an account!!!
+2023-04-16 16:34:29 INFO  AuthController:168 - Registered an account successfully !!!
+2023-04-16 16:34:46 INFO  AuthController:97 - verification successfully !!!
+2023-04-16 16:36:32 INFO  AuthController:65 - Sign in for an account!!!
+2023-04-16 16:36:33 INFO  AuthController:82 - Signin Successfully
+2023-04-16 17:00:12 INFO  ProductController:104 - add product successfully !!!
+2023-04-16 17:06:35 ERROR ProductController:213 - Download successfully
